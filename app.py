@@ -65,9 +65,9 @@ def scrape_url(url):
 
     desired_outline = get_final_outline(url=url, scraped_content=content)
 
-    st.success('Scraping complete!')
+    st.success(f'SUCCESS! Url {url} is processed.')
 
-    with st.expander(f"See results for {url}"):
+    with st.expander(f"See results"):
         # Display the scraped content and desired outline
         st.subheader("Scraped Content:")
         st.write(content)
@@ -86,7 +86,7 @@ def main():
     urls_input = st.text_area("Enter the URLs (one URL per line):", height=200)
     urls = urls_input.splitlines()
 
-    if st.button("Scrape URLs"):
+    if st.button("Scrape URLs and Create Outline"):
         for url in urls:
             scrape_url(url)
 
