@@ -66,7 +66,7 @@ def scrape_url(url):
     desired_outline = get_final_outline(url=url, scraped_content=content)
 
     st.success('Scraping complete!')
-    
+
     with st.expander(f"See results for {url}"):
         # Display the scraped content and desired outline
         st.subheader("Scraped Content:")
@@ -80,7 +80,7 @@ def main():
     if not os.path.exists('scraped_content'):
         os.makedirs('scraped_content')
 
-    st.title("URL Scraper")
+    st.title("Compose Blog Outline")
 
     # Get URLs from user input
     urls_input = st.text_area("Enter the URLs (one URL per line):", height=200)
