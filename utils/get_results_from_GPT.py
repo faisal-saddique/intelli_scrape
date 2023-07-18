@@ -10,7 +10,7 @@ openai_completion_model = os.getenv("OPENAI_COMPLETION_MODEL")
 use_gpt4 = os.getenv("GPT_4_COMPLETION").lower() == "true"
 
 
-async def gpt_completion(prompt: str, max_tokens=1350, temperature=0):
+def gpt_completion(prompt: str, max_tokens=1350, temperature=0):
 
     if use_gpt4:
 
