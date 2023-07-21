@@ -89,7 +89,7 @@ def main():
             try:
                 scraped_content = scrape_url(url)
                 all_content += scraped_content + '\n\n---------------------------\n\n'  # Using '\n\n' as delimiter
-                st.success(f'SUCCESS! Url {url} is processed.')
+                st.success(f'SUCCESS! Url {url} is processed.') 
             except Exception as e:
                 # st.error(f"FAILED. Url {url} returned an error while processing: {e}")
                 pass
