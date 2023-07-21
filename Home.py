@@ -4,6 +4,10 @@ import streamlit as st
 from bs4 import BeautifulSoup
 import re
 from utils.get_results_from_GPT import gpt_completion
+import utils.default_prompt as dp
+
+if "updated_prompt" not in st.session_state:
+    st.session_state.updated_prompt = dp.default_prompt
 
 # Function to replace multiple newlines with double newlines
 def replace_newlines(text):
@@ -31,8 +35,11 @@ def filter_paragraphs(paragraphs):
 
 # Function to get the response from ChatGPT
 def get_final_outline(url, scraped_content):
-    template = f"""
-Please make a short description (about 60 words) and also bullet-point highlights (one short sentence on feature) of the site: {url}, without any content from previous text generated. Here's the scraped content from this site:
+    
+    template = st.session_state.updated_prompt + f"""
+
+SITE:
+{url}
 
 SCRAPED CONTENT:
 {scraped_content}
@@ -40,7 +47,7 @@ SCRAPED CONTENT:
 ANSWER (SHORT DESCRIPTION OF 60 WORDS + A BULLET-POINT HIGHLIGHTS LIST IN MARKDOWN FORMAT):
 """
     # Use the function
-    result = gpt_completion(template, max_tokens=2000)
+    result = gpt_completion(template, max_tokens=400)
     return result
 
 def scrape_url(url):
@@ -63,17 +70,7 @@ def scrape_url(url):
 
     content = replace_newlines(content)
 
-    desired_outline = get_final_outline(url=url, scraped_content=content)
-
-    st.success(f'SUCCESS! Url {url} is processed.')
-
-    with st.expander(f"See results"):
-        # Display the scraped content and desired outline
-        st.subheader("Scraped Content:")
-        st.write(content)
-
-        st.subheader("Desired Outline:")
-        st.write(desired_outline)
+    return content
 
 def main():
     # Create scraped_content directory
@@ -87,10 +84,31 @@ def main():
     urls = urls_input.splitlines()
 
     if st.button("Scrape URLs and Create Outline"):
+        all_content = ""
         for url in urls:
-            scrape_url(url)
+            try:
+                scraped_content = scrape_url(url)
+                all_content += scraped_content + '\n\n---------------------------\n\n'  # Using '\n\n' as delimiter
+                st.success(f'SUCCESS! Url {url} is processed.')
+            except Exception as e:
+                # st.error(f"FAILED. Url {url} returned an error while processing: {e}")
+                pass
 
-    
+        # Count the words in the big string and check if it exceeds 2700
+        word_count = len(all_content.split())
+        if word_count > 2700:
+            # Split the content into words and keep the first 2700 words
+            st.warning("Scraped content is greater than the allowed limit, chunking it therefore..,")
+            all_content = ' '.join(all_content.split()[:2700])
+
+        with st.expander(f"See results"):
+            # Display the combined scraped content and desired outline
+            st.subheader("Combined Scraped Content:")
+            st.write(all_content)
+
+            st.subheader("Desired Outline:")
+            desired_outline = get_final_outline(urls[0], all_content)
+            st.write(desired_outline)
 
 if __name__ == "__main__":
     main()

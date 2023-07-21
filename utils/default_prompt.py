@@ -1,0 +1,1 @@
+default_prompt = "Please make a short description (about 60 words) and also bullet-point highlights (one short sentence on feature) for this site without any content from previous text generated."
