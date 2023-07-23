@@ -44,7 +44,10 @@ SITE:
 SCRAPED CONTENT:
 {scraped_content}
 
-ANSWER (SHORT DESCRIPTION OF 60 WORDS + A BULLET-POINT HIGHLIGHTS LIST IN MARKDOWN FORMAT):
+REQUIRED FORMAT OF RESPONSE:
+A description of the specified word length, followed by a bulled points list in the markdown format.
+
+RESPONSE:
 """
     # Use the function
     result = gpt_completion(template, max_tokens=400)
