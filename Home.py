@@ -14,7 +14,7 @@ if "updated_prompt" not in st.session_state:
 def replace_newlines(text):
     return '\n\n'.join(paragraph.strip() for paragraph in text.split('\n\n') if paragraph.strip())
 
-# Function to check if a paragraph has less than 5 words
+# Function to check if a paragraph has at least 5 words
 def is_valid_paragraph(paragraph):
     return len(paragraph.split()) >= 5
 
@@ -36,7 +36,6 @@ def filter_paragraphs(paragraphs):
 
 # Function to get the response from ChatGPT
 def get_final_outline(url, scraped_content):
-    
     template = st.session_state.updated_prompt + f"""
 
 SITE:
@@ -46,7 +45,7 @@ SCRAPED CONTENT:
 {scraped_content}
 
 REQUIRED FORMAT OF RESPONSE:
-A description of the specified word length, followed by a bulled points list in the markdown format.
+A description of the specified word length, followed by a bulleted points list in the markdown format.
 
 RESPONSE:
 """
@@ -77,9 +76,7 @@ def scrape_url(url):
     return content
 
 def main():
-
-
-    # Create scraped_content directory
+    # Create the scraped_content directory if it doesn't exist
     if not os.path.exists('scraped_content'):
         os.makedirs('scraped_content')
 
@@ -95,9 +92,9 @@ def main():
             try:
                 scraped_content = scrape_url(url)
                 st.session_state.all_content += scraped_content + '\n\n---------------------------\n\n'  # Using '\n\n' as delimiter
-                st.success(f'SUCCESS! Url {url} is processed.') 
+                st.success(f'SUCCESS! URL {url} is processed.')
             except Exception as e:
-                # st.error(f"FAILED. Url {url} returned an error while processing: {e}")
+                # st.error(f"FAILED. URL {url} returned an error while processing: {e}")
                 pass
 
         # Count the words in the big string and check if it exceeds 2700
@@ -113,3 +110,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+https://www.dvele.com/homes
+https://www.dvele.com/process
+https://www.dvele.com/benefits
+https://www.dvele.com/about-us
