@@ -110,8 +110,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-https://www.dvele.com/homes
-https://www.dvele.com/process
-https://www.dvele.com/benefits
-https://www.dvele.com/about-us
