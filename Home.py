@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import re
 from utils.get_results_from_GPT import gpt_completion
 import utils.default_prompt as dp
+from streamlit_extras.switch_page_button import switch_page
 
 if "updated_prompt" not in st.session_state:
     st.session_state.updated_prompt = dp.default_prompt
@@ -76,6 +77,8 @@ def scrape_url(url):
     return content
 
 def main():
+
+
     # Create scraped_content directory
     if not os.path.exists('scraped_content'):
         os.makedirs('scraped_content')
@@ -84,34 +87,29 @@ def main():
 
     # Get URLs from user input
     urls_input = st.text_area("Enter the URLs (one URL per line):", height=200)
-    urls = urls_input.splitlines()
+    st.session_state.urls = urls_input.splitlines()
 
     if st.button("Scrape URLs and Create Outline"):
-        all_content = ""
-        for url in urls:
+        st.session_state.all_content = ""
+        for url in st.session_state.urls:
             try:
                 scraped_content = scrape_url(url)
-                all_content += scraped_content + '\n\n---------------------------\n\n'  # Using '\n\n' as delimiter
+                st.session_state.all_content += scraped_content + '\n\n---------------------------\n\n'  # Using '\n\n' as delimiter
                 st.success(f'SUCCESS! Url {url} is processed.') 
             except Exception as e:
                 # st.error(f"FAILED. Url {url} returned an error while processing: {e}")
                 pass
 
         # Count the words in the big string and check if it exceeds 2700
-        word_count = len(all_content.split())
+        word_count = len(st.session_state.all_content.split())
         if word_count > 2700:
             # Split the content into words and keep the first 2700 words
             st.warning("Scraped content is greater than the allowed limit, chunking it therefore..,")
-            all_content = ' '.join(all_content.split()[:2700])
+            st.session_state.all_content = ' '.join(st.session_state.all_content.split()[:2700])
 
-        with st.expander(f"See results"):
-            # Display the combined scraped content and desired outline
-            st.subheader("Combined Scraped Content:")
-            st.write(all_content)
+        # if st.button("Save & Proceed"):
+        switch_page("Results")
 
-            st.subheader("Desired Outline:")
-            desired_outline = get_final_outline(urls[0], all_content)
-            st.write(desired_outline)
 
 if __name__ == "__main__":
     main()
